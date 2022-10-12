@@ -1,0 +1,196 @@
+libxmltok (1.2-4) unstable; urgency=medium
+
+  * Team upload.
+  * debian/rules:
+    + Rewrite using the dh sequencer.  Closes: #871512
+    + Don't build in parallel, the makefile is not parallel-safe
+  * Bump debhelper compat level to 10.
+    + No need to specify --sourcedir to dh_install anymore.
+  * Move to source format 3.0 (quilt).
+  * debian/control:
+    + Remove obsolete Vcs-* fields that don't work anymore.  Closes: #528300
+    + De-duplicate the long descriptions.
+    + De-duplicate the priority and section headers.
+    + Add dependency on ${misc:Depends}, to be used for debhelper.
+    + Bump Standards-Version to 4.0.1.
+  * debian/TODO: remove empty file.
+
+ -- Mattia Rizzolo <mattia@debian.org>  Thu, 10 Aug 2017 14:06:20 +0200
+
+libxmltok (1.2-3) unstable; urgency=low
+
+  * debian/control:
+    * replaced '${Source-Version}' by '${binary:Version}'
+      (detected by lintian)
+    * upgraded to Debian Policy 3.7.3
+    * added Vcs-Browser and Vcs-Cvs fields
+    * added Homepage field
+      (detected by lintian)
+    * changed build dependency on 'debhelper' to '(>= 5.0)'
+  * debian/compat: bumped version to 5
+  * debian/watch: bumped version to 3
+
+ -- Ardo van Rangelrooij <ardo@debian.org>  Fri, 04 Jan 2008 19:39:18 -0600
+
+libxmltok (1.2-2) unstable; urgency=low
+
+  * Added 'debian/watch'
+  * Makefile: updated to support setting CFLAGS through DEB_BUILD_OPTIONS
+  * debian/rules: added support for DEB_BUILD_OPTIONS
+  * debiam/rules: various small improvements
+
+ -- Ardo van Rangelrooij <ardo@debian.org>  Wed, 24 Nov 2004 16:29:33 -0600
+
+libxmltok (1.2-1) unstable; urgency=low
+
+  * New upstream release
+    (closes: Bug#251869)
+    - Makefile: updated
+    - xmlparse/Makefile: updated
+  * Added copyright statement file 'copying.txt'
+  * debian/copyright: updated to reflect new copyright statement
+  * debian/rules,xmlparse/Makefile,xmltok/Makefile: removed obsolete copyright
+    statement
+  * debian/control: added author's name and package homepage to description
+
+ -- Ardo van Rangelrooij <ardo@debian.org>  Tue,  1 Jun 2004 11:15:39 -0500
+
+libxmltok (1.1-14) unstable; urgency=low
+
+  * debian/control: changed 'Maintainer' to 'Debian XML/SGML Group
+    <debian-xml-sgml-pkgs@lists.alioth.debian.org>' and added current
+    maintainer as 'Uploaders'
+  * debian/control: upgraded to Debian Policy 3.6.1 (no changes)
+
+ -- Ardo van Rangelrooij <ardo@debian.org>  Sun, 29 Feb 2004 11:47:16 -0600
+
+libxmltok (1.1-13) unstable; urgency=low
+
+  * debian/control: changed section of 'libxmltok1-dev' from 'devel'
+    to 'libdevel'
+  * debian/rules: moved debhelper compatibility level setting to
+    'debian/compat' per latest debhelper best practices
+  * debian/control: changed build dependency on 'debhelper' to '(>= 4.1)'
+  * debian/control: upgraded to Debian Policy 3.6.0 (no changes)
+
+ -- Ardo van Rangelrooij <ardo@debian.org>  Thu, 14 Aug 2003 21:59:32 -0500
+
+libxmltok (1.1-12) unstable; urgency=low
+
+  * xmlparse/Makefile: explicit linking against libxmltok
+    (closes: Bug#175052)
+
+ -- Ardo van Rangelrooij <ardo@debian.org>  Sat, 11 Jan 2003 12:14:17 -0600
+
+libxmltok (1.1-11) unstable; urgency=low
+
+  * debian/control: changed dependency for package 'libxmltok1-dev' on the
+    C library from 'libc6-dev' to 'libc6-dev | libc-dev'
+
+ -- Ardo van Rangelrooij <ardo@debian.org>  Wed, 25 Dec 2002 18:52:21 -0600
+
+libxmltok (1.1-10) unstable; urgency=low
+
+  * debian/control: upgraded to Debian Policy 3.5.8
+  * debian/copyright: added the location of the GPL a Debian system
+
+ -- Ardo van Rangelrooij <ardo@debian.org>  Wed, 25 Dec 2002 12:27:29 -0600
+
+libxmltok (1.1-9) unstable; urgency=low
+
+  * debian/rules: upgraded to debhelper v4
+  * debian/control: changed build dependency on debhelper accordingly
+  * debian/rules: migrated from 'dh_movefiles' to 'dh_install'
+  * debian/rules: split off 'install' target from 'binary-arch' target
+
+ -- Ardo van Rangelrooij <ardo@debian.org>  Sat, 10 Aug 2002 09:59:42 -0500
+
+libxmltok (1.1-8) unstable; urgency=low
+
+  * debian/control: removed reference to non-existing Netscape 5 from long
+    description
+    (closes: Bug#131763)
+
+ -- Ardo van Rangelrooij <ardo@debian.org>  Sat, 16 Feb 2002 20:36:52 -0600
+
+libxmltok (1.1-7) unstable; urgency=low
+
+  * Removed explicit dhelp support since doc-base now takes care of this
+  * debian/control: upgraded to Debian Policy 3.5.6
+
+ -- Ardo van Rangelrooij <ardo@debian.org>  Sun,  4 Nov 2001 11:10:28 -0600
+
+libxmltok (1.1-6) unstable; urgency=low
+
+  * debian/control: updated debhelper dependency to remove dh_testversion
+  * debian/control: upgraded to Debian Policy 3.5.2
+
+ -- Ardo van Rangelrooij <ardo@debian.org>  Tue, 24 Apr 2001 20:48:57 -0500
+
+libxmltok (1.1-5) unstable; urgency=low
+
+  * debian/control: fixed section override disparity
+
+ -- Ardo van Rangelrooij <ardo@debian.org>  Mon, 29 Jan 2001 19:39:23 -0600
+
+libxmltok (1.1-4) unstable; urgency=low
+
+  * Initial release as separate branch from expat to ease maintenance
+  * debian/control: updated to reflect separate branch
+    (closes: Bug#81866)
+  * Makefile: added install target
+  * Makefile/xmltok: added install target
+  * Makefile/xmlparse: added install target
+  * debian/rules: completely overhauled
+  * Added doc-base and dhelp support
+
+ -- Ardo van Rangelrooij <ardo@debian.org>  Sun, 28 Jan 2001 09:27:42 -0600
+
+expat (1.1-3) unstable; urgency=low
+   
+  * New maintainer
+   
+ -- Ardo van Rangelrooij <ardo@debian.org>  Sat,  7 Oct 2000 13:40:57 -0500
+   
+expat (1.1-2) unstable; urgency=low
+   
+  * debian/rules: more debhelperification and use more FHS stuff
+  * debian/control: standards bumped to 3.2.1 (closes: Bug#70336)
+   
+ -- Adam Di Carlo <aph@debian.org>  Wed, 27 Sep 2000 00:56:10 -0400
+   
+expat (1.1-1) unstable; urgency=low
+   
+  * new upstream version
+  * debian/rules: aesthetic cleanups, use a bit more debhelper stuff to
+    reduce complexity
+   
+ -- Adam Di Carlo <aph@debian.org>  Tue,  1 Jun 1999 22:36:29 -0400
+   
+expat (1.0.2-1) unstable; urgency=low
+   
+  * new upstream version
+  * maintainer name change
+  * standards-version: bumped to 2.5.0 (no changes required)
+   
+ -- Adam Di Carlo <aph@debian.org>  Wed, 13 Jan 1999 18:35:53 -0500
+   
+expat (1.0-2) unstable; urgency=low
+   
+  * debian/rules: fix symlink for docdir of libxmltok1-dev
+   
+ -- Adam P. Harris <aph@debian.org>  Sun, 23 Aug 1998 15:51:43 -0400
+  
+expat (1.0-1) unstable; urgency=low
+   
+  * Initial release.
+  * Makefile: added MPL notice as required by license, modifications to
+    enable building of xmltok and xmlparse as shared and static
+    libraries.
+  * xmltok/Makefile: created to enable building libxmltok.a and
+    libxmltok.so
+  * xmlparse/Makefile: created to enable building libxmlparse.a and and
+    libxmlparse.so
+  * debian/*: Debian-specific files
+   
+ -- Adam P. Harris <aph@debian.org>  Mon, 17 Aug 1998 01:12:09 -0400

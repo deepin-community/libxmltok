@@ -1,0 +1,224 @@
+Description: Changes done before the switch to source format 3.0 (quilt).
+
+--- libxmltok-1.2.orig/Makefile
++++ libxmltok-1.2/Makefile
+@@ -1,46 +1,97 @@
+-CC=gcc
++CC=cc
+ # If you know what your system's byte order is, define XML_BYTE_ORDER:
+ # use -DXML_BYTE_ORDER=12 for little-endian byte order;
+ # use -DXML_BYTE_ORDER=21 for big-endian (network) byte order.
+ # -DXML_NS adds support for checking of lexical aspects of XML namespaces spec
+ # -DXML_MIN_SIZE makes a smaller but slower parser
+ # -DXML_DTD adds full support for parsing DTDs
+-CFLAGS=-Wall -O2 -Ixmltok -Ixmlparse -DXML_NS -DXML_DTD
+-AR=ar
++CFLAGS=-Wall -O2
++CFLAGS+=--pipe -DXML_NS -DXML_DTD
++INCLUDES=-Ixmltok -Ixmlparse
+ # Use one of the next two lines; unixfilemap is better if it works.
+ FILEMAP_OBJ=xmlwf/unixfilemap.o
+ #FILEMAP_OBJ=xmlwf/readfilemap.o
+-LIBOBJS=xmltok/xmltok.o \
+-  xmltok/xmlrole.o \
+-  xmlparse/xmlparse.o
+-
+-OBJS=xmlwf/xmlwf.o \
+-  xmlwf/xmlfile.o \
+-  xmlwf/codepage.o \
+-  $(FILEMAP_OBJ)
+-LIB=xmlparse/libexpat.a
++# if you want to make the libraries and shlibs
++MAKE_LIBS=true
++
++ELF_SO_VERSION=1		# major library version
++LIB_VERSION=1.2			# full library version
++LIBS=xmltok/libxmltok.a xmlparse/libxmlparse.a
++ELF_LIBS=xmltok/libxmltok.so.$(LIB_VERSION) \
++  xmlparse/libxmlparse.so.$(LIB_VERSION)
++ELF_OTHER_LIBS=-lc		# other libs to link shlib with
++ELF_FLAGS=-fpic -D_REENTRANT	# flags for compiling shlibs
++AR=ar
++RANLIB=true
++
++prefix		= /usr/local
++bin_dir		= $(prefix)/bin
++
++ifndef MAKE_LIBS
++  OBJS=$(FILEMAP_OBJ) \
++    xmlparse/xmlparse.o \
++    xmltok/xmltok.o \
++    xmltok/xmlrole.o \
++    xmlwf/xmlwf.o \
++    xmlwf/xmlfile.o \
++    xmlwf/codepage.o
++else
++  OBJS=$(FILEMAP_OBJ) \
++    xmlwf/xmlwf.o \
++    xmlwf/xmlfile.o \
++    xmlwf/codepage.o
++  LIBS_TO_BUILD=$(ELF_LIBS) \
++    $(LIBS)
++endif
++
+ EXE=
+ XMLWF=xmlwf/xmlwf$(EXE)
+ 
++# export these variables to sub-makes
++export
++
+ all: $(XMLWF)
+ 
+-$(XMLWF): $(OBJS) $(LIB)
+-	$(CC) $(CFLAGS) -o $@ $(OBJS) $(LIB)
++shlib-version:
++	@echo $(LIB_VERSION)
++
++$(XMLWF): $(OBJS) $(LIBS_TO_BUILD)
++ifndef MAKE_LIBS
++	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $(OBJS)
++else
++	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $(OBJS) -Lxmlparse -lxmlparse \
++		-Lxmltok -lxmltok
++endif
+ 
+-$(LIB): $(LIBOBJS)
+-	$(AR) rc $(LIB) $(LIBOBJS)
++$(LIBS) $(ELF_LIBS):
++	$(MAKE) -C$(dir $@) $(notdir $@)
+ 
+ clean:
+-	rm -f $(OBJS) $(LIBOBJS) $(LIB) $(XMLWF)
++	rm -f $(OBJS) $(XMLWF) gennmtab/gennmtab$(EXE)
++ifdef MAKE_LIBS
++	$(MAKE) -Cxmltok clean
++	$(MAKE) -Cxmlparse clean
++endif
+ 
+ xmltok/nametab.h: gennmtab/gennmtab$(EXE)
+ 	rm -f $@
+ 	gennmtab/gennmtab$(EXE) >$@
+ 
+ gennmtab/gennmtab$(EXE): gennmtab/gennmtab.c
+-	$(CC) $(CFLAGS) -o $@ gennmtab/gennmtab.c
++	$(CC) $(CFLAGS) $(INCLUDES) -o $@ gennmtab/gennmtab.c
+ 
+ xmltok/xmltok.o: xmltok/nametab.h
+ 
+ .c.o:
+-	$(CC) $(CFLAGS) -c -o $@ $<
++	$(CC) $(CFLAGS) $(INCLUDES) -c -o $@ $<
++
++shared/%.o:	%.c
++	$(CC) $(CFLAGS) $(INCLUDES) $(ELF_FLAGS) -c -o $@ $<
++
++install:
++	mkdir -p $(bin_dir)
++	cp -a xmlwf/xmlwf$(EXE) $(bin_dir)
++ifdef MAKE_LIBS
++	$(MAKE) -Cxmltok install
++	$(MAKE) -Cxmlparse install
++endif
+--- /dev/null
++++ libxmltok-1.2/copying.txt
+@@ -0,0 +1,20 @@
++Copyright (c) 1998, 1999, 2000 Thai Open Source Software Center Ltd
++
++Permission is hereby granted, free of charge, to any person obtaining
++a copy of this software and associated documentation files (the
++"Software"), to deal in the Software without restriction, including
++without limitation the rights to use, copy, modify, merge, publish,
++distribute, sublicense, and/or sell copies of the Software, and to
++permit persons to whom the Software is furnished to do so, subject to
++the following conditions:
++
++The above copyright notice and this permission notice shall be included
++in all copies or substantial portions of the Software.
++
++THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
++EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
++MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
++IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
++CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
++TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
++SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+--- /dev/null
++++ libxmltok-1.2/xmlparse/Makefile
+@@ -0,0 +1,37 @@
++LIB		:= xmlparse
++OBJS		:= xmlparse.o
++INCLUDES	:= -I../xmltok -I../xmlparse
++SHOBJS		:= $(OBJS:%=shared/%)
++ELF_SONAME	:= lib$(LIB).so.$(ELF_SO_VERSION)
++ELF_OTHER_LIBS	:= -L../xmltok -lxmltok -lc
++
++prefix		= /usr/local
++lib_dir		= $(prefix)/lib
++inc_dir		= $(prefix)/include/xmltok
++
++lib$(LIB).a: $(OBJS)
++	$(AR) r $@ $?
++	$(RANLIB) $@
++
++lib$(LIB).so.$(LIB_VERSION): $(SHOBJS)
++	$(CC) --shared -o $@ -Wl,-soname,$(ELF_SONAME) $? $(ELF_OTHER_LIBS)
++	ln -sf $@ lib$(LIB).so
++	ln -sf $@ $(ELF_SONAME)
++
++clean:
++	rm -f $(OBJS) lib$(LIB).a
++	rm -f lib$(LIB).so.$(LIB_VERSION) lib$(LIB).so $(ELF_SONAME)
++	rm -rf shared/
++
++.c.o:
++	$(CC) $(CFLAGS) $(INCLUDES) -c -o $@ $<
++
++shared/%.o:	%.c
++	@[ -d shared ] || mkdir shared
++	$(CC) $(CFLAGS) $(INCLUDES) $(ELF_FLAGS) -c -o $@ $<
++
++install:
++	mkdir -p $(lib_dir) $(inc_dir)
++	cp -a lib$(LIB).a $(lib_dir)
++	cp -a lib$(LIB).so* $(lib_dir)
++	cp -a *.h $(inc_dir)
+--- /dev/null
++++ libxmltok-1.2/xmltok/Makefile
+@@ -0,0 +1,37 @@
++LIB		:= xmltok
++OBJS		:= xmltok.o xmlrole.o
++INCLUDES	:= -I../xmltok -I../xmlparse
++SHOBJS		:= $(OBJS:%=shared/%)
++ELF_SONAME	:= lib$(LIB).so.$(ELF_SO_VERSION)
++
++prefix		= /usr/local
++lib_dir		= $(prefix)/lib
++inc_dir		= $(prefix)/include/xmltok
++
++lib$(LIB).a: $(OBJS)
++	$(AR) r $@ $?
++	$(RANLIB) $@
++
++lib$(LIB).so.$(LIB_VERSION): $(SHOBJS)
++	$(CC) --shared -o $@ -Wl,-soname,$(ELF_SONAME) $? $(ELF_OTHER_LIBS)
++	ln -sf $@ lib$(LIB).so
++	ln -sf $@ $(ELF_SONAME)
++
++clean:
++	rm -f $(OBJS) lib$(LIB).a
++	rm -f lib$(LIB).so.$(LIB_VERSION) lib$(LIB).so $(ELF_SONAME)
++	rm -rf shared/
++
++.c.o:
++	$(CC) $(CFLAGS) $(INCLUDES) -c -o $@ $<
++
++shared/%.o:	%.c
++	@[ -d shared ] || mkdir shared
++	$(CC) $(CFLAGS) $(INCLUDES) $(ELF_FLAGS) -c -o $@ $<
++
++install:
++	mkdir -p $(lib_dir) $(inc_dir)
++	cp -a lib$(LIB).a $(lib_dir)
++	cp -a lib$(LIB).so* $(lib_dir)
++	cp -a *.h $(inc_dir)
++

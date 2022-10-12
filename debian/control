@@ -1,0 +1,33 @@
+Source: libxmltok
+Section: libs
+Priority: optional
+Maintainer: Debian XML/SGML Group <debian-xml-sgml-pkgs@lists.alioth.debian.org>
+Uploaders: Ardo van Rangelrooij <ardo@debian.org>
+Homepage: http://www.jclark.com/xml/expat.html
+Standards-Version: 4.0.1
+Build-Depends: debhelper (>= 10)
+
+Package: libxmltok1-dev
+Section: libdevel
+Architecture: any
+Depends: libxmltok1 (= ${binary:Version}), ${misc:Depends}, libc6-dev | libc-dev
+Description: XML Parser Toolkit, developer libraries
+ Libraries for XML parsing in C.  It aims to be fully conforming. It
+ is currently not a validating XML processor.
+ .
+ The library libxmltok contains a low-level library for tokenizing
+ XML.  The library libxmlparse contains an XML parser library which is
+ built on top of the xmltok library.
+ .
+ This package contains the development headers.
+
+Package: libxmltok1
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: XML Parser Toolkit, runtime libraries
+ Libraries for XML parsing in C.  It aims to be fully conforming. It
+ is currently not a validating XML processor.
+ .
+ The library libxmltok contains a low-level library for tokenizing
+ XML.  The library libxmlparse contains an XML parser library which is
+ built on top of the xmltok library.

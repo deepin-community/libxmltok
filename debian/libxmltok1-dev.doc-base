@@ -1,0 +1,9 @@
+Document: libxmltok1
+Title: XML Parser Toolkit
+Author: James Clark <jjc@jclark.com>
+Abstract: This manual describes the XML Parser Toolkit.
+Section: Text
+
+Format: HTML
+Index: /usr/share/doc/libxmltok1-dev/expat.html
+Files: /usr/share/doc/libxmltok1-dev/*.html
